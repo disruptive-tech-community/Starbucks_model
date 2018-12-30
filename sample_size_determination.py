@@ -81,9 +81,45 @@ def power(p_null, p_alt, n, alpha = .05, plot = True):
     # return power
     return (1 - beta)
 
-power(.1, .12, 1000) # Statistical power approx 44%
-power(.1, .12, 2000) # Statistical power approx 67%
-power(.1, .12, 2863) # Statistical power approx 80%
+#power(.1, .12, 1000) # Statistical power approx 44%
+#power(.1, .12, 2000) # Statistical power approx 67%
+power(.1, .12, 2863) # Statistical power little over 80%
+
+# Analytic Solution:
+# ------------------
+
+# The key point to notice is that, for an  𝛼  and  𝛽  both < .5, the critical
+# value for determining statistical significance will fall between our null
+# click-through rate and our alternative, desired click-through rate.
+# So, the difference between  𝑝0  and  𝑝1  can be subdivided into the distance
+# from  𝑝0  to the critical value  𝑝∗  and the distance from  𝑝∗  to  𝑝1 .
+
+def experiment_size(p_null, p_alt, alpha=.05, beta=.20):
+    """
+    Compute the minimum number of samples needed to achieve a desired power
+    level for a given effect size.
+
+    Input parameters:
+        p_null: base success rate under null hypothesis
+        p_alt : desired success rate to be detected
+        alpha : Type-I error rate
+        beta  : Type-II error rate
+
+    Output value:
+        n : Number of samples required for each group to obtain desired power
+    """
+
+    # Get necessary z-scores and standard deviations (@ 1 obs per group)
+    z_null = stats.norm.ppf(1 - alpha)
+    z_alt = stats.norm.ppf(beta)
+    sd_null = np.sqrt(2 * p_null * (1 - p_null))
+    sd_alt = np.sqrt((p_null * (1 - p_null) + (p_alt * (1 - p_alt))))
+
+    p_diff = p_alt - p_null
+    n = ((z_null*sd_null - z_alt*sd_alt) / p_diff) ** 2
+    return np.ceil(n)
+
+experiment_size(0.1, 0.12)
 
 
 
