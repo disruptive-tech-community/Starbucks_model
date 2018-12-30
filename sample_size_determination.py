@@ -122,8 +122,14 @@ def experiment_size(p_null, p_alt, alpha=.05, beta=.20):
 experiment_size(0.1, 0.12)
 
 
+# Alternative Approaches
+# example of using statsmodels for sample size calculation
+from statsmodels.stats.power import NormalIndPower
+from statsmodels.stats.proportion import proportion_effectsize
 
-
+# leave out the "nobs" parameter to solve for it
+NormalIndPower().solve_power(effect_size = proportion_effectsize(.12, .1), alpha = .05, power = 0.8,
+                             alternative = 'larger')
 
 
 
