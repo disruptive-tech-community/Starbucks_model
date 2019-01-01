@@ -33,7 +33,8 @@ def peeking_sim(alpha=.05, p=.5, n_trials=1000, n_blocks=2, n_sims=10000):
     # test outcomes
     z_crit = stats.norm.ppf(1 - alpha / 2)
     sig_flags = np.abs(data_zscores) > z_crit
-    p_sig_any = (sig_flags.sum(axis=1) > 0).mean()
+    temp = sig_flags.sum(axis=1)
+    p_sig_any = ( temp> 0).mean()
     p_sig_each = sig_flags.mean(axis=0)
 
     return (p_sig_any, p_sig_each)
